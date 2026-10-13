@@ -308,6 +308,12 @@
   #tab-bia .g-troca{grid-template-columns:minmax(0,2fr) 64px 92px 34px}
   #tab-bia .g-assist{grid-template-columns:minmax(0,2fr) 110px 34px}
   #tab-bia .g-horario{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) minmax(0,1fr) 92px}
+  #tab-bia .so-gerencia{display:none !important}
+  #tab-bia.gerencia .so-gerencia{display:inline-block !important}
+  #tab-bia.gerencia nav .so-gerencia{display:inline-flex !important}
+  #tab-bia label.bia-opcao{display:flex;gap:8px;align-items:flex-start;cursor:pointer}
+  #tab-bia label.bia-opcao input{margin-top:3px;flex:0 0 auto}
+  #tab-bia .g-hbia{grid-template-columns:minmax(0,1fr) 84px minmax(0,1fr) minmax(0,1fr)}
   #tab-bia .bia-gl .x{padding:6px 0;border:none;background:none;color:var(--danger);font-size:16px;cursor:pointer}
   #tab-bia .bia-grid-corpo{max-height:60vh;overflow-y:auto}
   #tab-bia select.bia-sel{padding:9px;border-radius:12px;border:1px solid var(--line);background:#fff;max-width:100%}
@@ -628,26 +634,33 @@
   </section>
 
   <div id="bia-app" style="display:none">
-    <div class="bia-card bia-linha">
-      <div style="font-size:30px">🤖</div>
-      <div style="flex:1;min-width:180px">
-        <b>Bia · atendente do Instagram</b>
-        <div class="bia-sub" id="bia-status">Carregando…</div>
+    <div class="bia-card">
+      <div class="bia-linha">
+        <div style="font-size:30px">🤖</div>
+        <div style="flex:1;min-width:190px">
+          <div class="bia-sub">Agora quem responde o Direct:</div>
+          <b id="bia-quem" style="font-size:19px">…</b>
+          <div class="bia-sub" id="bia-status">Carregando…</div>
+        </div>
+        <button class="bia-bt pri" id="bia-reforco-ligar" title="Equipe ocupada? A Bia responde todos os clientes por 1 hora.">⚡ Bia assume por 1 hora</button>
       </div>
-      <span class="bia-chave" id="bia-chave" title="Liga ou desliga a Bia no Instagram"><i></i><span>Desligada</span></span>
-      <button class="bia-bt mini" id="bia-notif">🔔 Ativar notificações</button>
-      <button class="bia-bt mini" id="bia-sair">Sair</button>
+      <div class="bia-linha" style="margin-top:10px;justify-content:flex-end">
+        <button class="bia-bt mini" id="bia-notif">🔔 Ativar avisos</button>
+        <button class="bia-bt mini" id="bia-gerencia-bt" title="Configurações da Bia (para o dono ou gerente)">🔧 Gerência</button>
+        <button class="bia-bt mini" id="bia-sair">Sair</button>
+      </div>
     </div>
 
     <nav class="bia-abas" id="bia-abas">
-      <button data-secao="alertas" class="ativa">🔔 Alertas</button>
+      <button data-secao="alertas" class="ativa">🔔 Avisos</button>
       <button data-secao="conversas">💬 Conversas</button>
       <button data-secao="agenda">📅 Agendamentos</button>
-      <button data-secao="aprendizados">🧠 Aprendizados</button>
-      <button data-secao="sac">🎧 SAC</button>
-      <button data-secao="tabelas">💲 Tabelas</button>
-      <button data-secao="relatorio">📊 Relatório</button>
-      <button data-secao="ajustes">⚙️ Ajustes</button>
+      <span class="so-gerencia bia-sub" style="align-self:center;margin-left:6px">Gerência:</span>
+      <button data-secao="ajustes" class="so-gerencia">⚙️ Como a Bia trabalha</button>
+      <button data-secao="tabelas" class="so-gerencia">💲 Preços e tabelas</button>
+      <button data-secao="sac" class="so-gerencia">🎧 Respostas do SAC</button>
+      <button data-secao="aprendizados" class="so-gerencia">🧠 Regras da Bia</button>
+      <button data-secao="relatorio" class="so-gerencia">📊 Relatório</button>
     </nav>
 
     <section data-secao="alertas" id="bia-alertas"></section>
@@ -715,17 +728,37 @@
       <div id="bia-relatorio"></div>
     </section>
     <section data-secao="ajustes" style="display:none">
+      <div class="bia-card bia-linha">
+        <div style="flex:1;min-width:200px"><b>1. Bia ligada</b><div class="bia-sub">Desligada, ela não responde ninguém. As mensagens continuam aparecendo em Conversas.</div></div>
+        <span class="bia-chave" id="bia-chave" title="Liga ou desliga a Bia no Instagram"><i></i><span>Desligada</span></span>
+      </div>
+      <div class="bia-card">
+        <b>2. Horário da Bia</b>
+        <p class="bia-sub" style="margin:4px 0 8px">Quando a Bia responde sozinha. No resto do tempo, quem responde é a equipe (e você não gasta com a Bia).</p>
+        <div class="bia-linha" style="margin-bottom:8px">
+          <label class="bia-linha"><input type="radio" name="bia-hmodo" value="sempre"> 24 horas</label>
+          <label class="bia-linha"><input type="radio" name="bia-hmodo" value="horarios"> Só nos horários abaixo</label>
+          <button class="bia-bt mini" id="bia-hsugerir">Preencher com "loja fechada"</button>
+        </div>
+        <div id="bia-hgrade"></div>
+        <label class="bia-opcao" style="margin-top:8px"><input type="checkbox" id="bia-hcontinuar"> <span>Se o horário acabar no meio de uma conversa, ela termina (até 1h)</span></label>
+        <div class="bia-linha" style="margin-top:10px"><button class="bia-bt pri mini" id="bia-hsalvar">Salvar horário</button><span class="bia-sub" id="bia-hstatus"></span></div>
+      </div>
       <div class="bia-card" style="display:grid;gap:12px">
-        <label class="bia-linha"><input type="checkbox" id="bia-cfg-followup"> Retomar cliente quente ou morno que parou de responder: até 2 mensagens dentro das 24h que o Instagram permite (das 9h às 21h). Depois disso, a equipe recebe um alerta para retomar pessoalmente.</label>
-        <label class="bia-linha"><input type="checkbox" id="bia-cfg-auto"> Aprovar sozinhas as sugestões de baixo risco (nunca as que falam de preço, desconto, brinde ou garantia)</label>
-        <label class="bia-linha">Quando alguém da equipe responde um cliente pelo Instagram, a Bia fica quieta naquela conversa por <input type="number" id="bia-cfg-pausa" min="1" max="72" style="width:80px"> horas (ou até clicar em "Devolver para a Bia"). Nas outras conversas ela continua normal.</label>
+        <b>3. Equipe e Bia juntas</b>
+        <label class="bia-linha">Cliente sem resposta da equipe por <input type="number" id="bia-cfg-assumir" min="0" max="240" style="width:70px"> minutos: a Bia entra. <span class="bia-sub">(0 = nunca)</span></label>
+        <label class="bia-linha">Vendedora respondeu um cliente: a Bia não fala com ele por <input type="number" id="bia-cfg-pausa" min="1" max="72" style="width:70px"> horas.</label>
+        <label class="bia-opcao"><input type="checkbox" id="bia-cfg-followup"> <span>Retomar cliente que parou de responder (até 2 mensagens no mesmo dia, das 9h às 21h)</span></label>
+        <label class="bia-opcao"><input type="checkbox" id="bia-cfg-auto"> <span>Aprovar sozinhas as sugestões simples da Bia (nunca as de preço, desconto, brinde ou garantia)</span></label>
         <div><button class="bia-bt pri mini" id="bia-salvar-cfg">Salvar</button> <span class="bia-sub" id="bia-status-cfg"></span></div>
       </div>
       <div class="bia-card">
-        <b>Gasto com o Gemini (30 dias)</b>
-        <div class="bia-linha bia-sub" style="margin:8px 0">US$ por milhão de tokens: entrada <input id="bia-preco-e" type="text" style="width:70px"> saída <input id="bia-preco-s" type="text" style="width:70px"> dólar (R$) <input id="bia-dolar" type="text" style="width:70px"></div>
-        <div class="bia-sub">Confira os preços atuais em ai.google.dev/pricing.</div>
+        <b>4. Quanto a Bia está custando</b>
         <div id="bia-uso" style="margin-top:8px"></div>
+        <details style="margin-top:8px"><summary class="bia-sub" style="cursor:pointer">Preço do Gemini usado na conta</summary>
+          <div class="bia-linha bia-sub" style="margin:8px 0">US$ por milhão de tokens: entrada <input id="bia-preco-e" type="text" style="width:70px"> saída <input id="bia-preco-s" type="text" style="width:70px"> dólar (R$) <input id="bia-dolar" type="text" style="width:70px"></div>
+          <div class="bia-sub">Confira em ai.google.dev/pricing.</div>
+        </details>
       </div>
     </section>
   </div>
@@ -2025,7 +2058,18 @@
     config = data;
     $('bia-chave').classList.toggle('on', !!data?.ativo);
     $('bia-chave').querySelector('span').textContent = data?.ativo ? 'Ligada' : 'Desligada';
-    $('bia-status').textContent = data?.ativo ? '🟢 Ligada: respondendo os clientes' : '🔴 Desligada: ninguém está sendo respondido pela Bia';
+    const teste = data?.testadores?.length ? ' · Fase de testes: a Bia só responde as contas de teste.' : '';
+    const reforco = data?.ativo && data?.reforco_ate && new Date(data.reforco_ate) > new Date();
+    const hora = (iso) => new Date(iso).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    let quem, detalhe;
+    if (!data?.ativo) { quem = '👩‍💼 Equipe'; detalhe = 'A Bia está desligada.'; }
+    else if (reforco) { quem = '🤖 Bia'; detalhe = `A equipe pediu ajuda: a Bia responde todos até ${hora(data.reforco_ate)}.`; }
+    else if (biaAtendeAgora(data.horario_bia)) { quem = '🤖 Bia'; detalhe = data.horario_bia ? 'É o horário dela (loja fechada).' : 'Ela atende 24 horas.'; }
+    else { quem = '👩‍💼 Equipe'; detalhe = data.assumir_apos_min ? `Se ninguém responder um cliente em ${data.assumir_apos_min} minutos, a Bia entra.` : 'Responda os clientes pelo Instagram, como sempre.'; }
+    $('bia-quem').textContent = quem;
+    $('bia-status').textContent = detalhe + teste;
+    $('bia-reforco-ligar').textContent = reforco ? '✋ Equipe volta a atender' : '⚡ Bia assume por 1 hora';
+    $('bia-reforco-ligar').style.display = data?.ativo && (reforco || quem.includes('Equipe')) ? '' : 'none';
   }
   $('bia-chave').onclick = async () => {
     const ligar = !config?.ativo;
@@ -2064,9 +2108,9 @@
     $('bia-badge').textContent = n > 99 ? '99+' : n;
     $('bia-badge').classList.toggle('on', n > 0);
     const naAba = $('tab-bia').classList.contains('active');
-    $('bia-flutuante').textContent = `🔔 ${n} ${n === 1 ? 'alerta' : 'alertas'} da Bia`;
+    $('bia-flutuante').textContent = `🔔 ${n} ${n === 1 ? 'aviso' : 'avisos'} da Bia`;
     $('bia-flutuante').classList.toggle('on', n > 0 && !naAba);
-    document.querySelector('#bia-abas [data-secao=alertas]').textContent = `🔔 Alertas${n ? ` (${n})` : ''}`;
+    document.querySelector('#bia-abas [data-secao=alertas]').textContent = `🔔 Avisos${n ? ` (${n})` : ''}`;
     const ultimo = Number(LS.get('kronos-bia-ultimo-alerta', 0));
     const novos = alertas.filter((a) => a.id > ultimo);
     if (novos.length) {
@@ -2170,6 +2214,18 @@
   }
 
   // ------------------------------------------------------------------ agendamentos
+  // Link que abre o Google Agenda com o evento preenchido (funciona sem configurar nada).
+  function linkAgenda(a) {
+    const [y, m, d] = String(a.data || '').split('-'), [h, mi] = String(a.horario || '00:00').split(':');
+    const fim = new Date(Number(y), Number(m) - 1, Number(d), Number(h), Number(mi) + 30);
+    const p = (n) => String(n).padStart(2, '0');
+    const f = (Y, M, D, H, MI) => `${Y}${p(M)}${p(D)}T${p(H)}${p(MI)}00`;
+    const x = a.dados || {};
+    const detalhes = [`Cliente: ${x.nome || '-'}`, `WhatsApp: ${x.whatsapp || '-'}`, `Instagram: ${x.instagram || '-'}`, x.forma_pagamento ? `Pagamento: ${x.forma_pagamento}` : '', x.resumo ? `Proposta: ${x.resumo}` : '', 'Agendado pela Bia'].filter(Boolean).join('\n');
+    const q = { action: 'TEMPLATE', text: a.titulo || x.nome || 'Agendamento', ctz: 'America/Sao_Paulo', details: detalhes,
+      dates: `${f(y, Number(m), Number(d), Number(h), Number(mi))}/${f(fim.getFullYear(), fim.getMonth() + 1, fim.getDate(), fim.getHours(), fim.getMinutes())}` };
+    return 'https://calendar.google.com/calendar/render?' + Object.entries(q).map(([k, v]) => `${k}=${encodeURIComponent(v)}`).join('&');
+  }
   async function carregarAgenda() {
     const desde = new Date(Date.now() - 14 * 864e5).toISOString().slice(0, 10);
     const { data, error } = await sb.from('ig_agendamentos').select('*').gte('data', desde).order('data').order('horario');
@@ -2191,7 +2247,14 @@
           el('button', { class: 'bia-bt ok mini', onclick: () => marcar(a, 'comprou') }, '💰 Comprou'),
           el('button', { class: 'bia-bt nao mini', onclick: () => marcar(a, 'nao_veio') }, 'Não veio'),
           el('button', { class: 'bia-bt mini', onclick: () => marcar(a, 'remarcou') }, 'Remarcou'),
-          a.conversa_id ? el('button', { class: 'bia-bt mini', onclick: () => abrirConversa(a.conversa_id) }, 'Ver conversa') : null)))
+          a.conversa_id ? el('button', { class: 'bia-bt mini', onclick: () => abrirConversa(a.conversa_id) }, 'Ver conversa') : null),
+        el('div', { class: 'bia-linha', style: 'margin-top:6px' },
+          el('a', { class: 'bia-bt mini', href: linkAgenda(a), target: '_blank', rel: 'noopener', style: 'text-decoration:none' }, '➕ Abrir no Google Agenda'),
+          el('button', { class: 'bia-bt mini', onclick: async (ev) => {
+            ev.target.disabled = true; ev.target.textContent = 'Enviando…';
+            try { await chamarServidor('enviar_agenda', { id: a.id }); ev.target.textContent = '✓ Está na agenda'; }
+            catch (e) { ev.target.disabled = false; ev.target.textContent = '📤 Enviar para a agenda'; alert('Não foi: ' + e.message + '\n\nUse "Abrir no Google Agenda" e salve o evento.'); }
+          } }, '📤 Enviar para a agenda'))))
         : [vazio('Nenhum agendamento nos últimos 14 dias.')]));
   }
 
@@ -2462,18 +2525,115 @@
     catch (err) { $('bia-tab-status').textContent = '⚠️ ' + err.message; }
   };
 
+  // ------------------------------------------------------------------ horário da Bia
+  // Mesmo formato do servidor: dias.segunda = { todo: true } ou { ate: '09:00', desde: '20:30' }.
+  const DIAS_BIA = [['segunda', 'Segunda'], ['terca', 'Terça'], ['quarta', 'Quarta'], ['quinta', 'Quinta'], ['sexta', 'Sexta'], ['sabado', 'Sábado'], ['domingo', 'Domingo']];
+  let horarioEdit = null;
+  function biaAtendeAgora(h) {
+    if (!h || !h.dias) return true;
+    const p = Object.fromEntries(new Intl.DateTimeFormat('en-US', { timeZone: 'America/Sao_Paulo', weekday: 'short', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' })
+      .formatToParts(new Date()).map((x) => [x.type, x.value]));
+    const dia = ['domingo', 'segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado'][['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(p.weekday)];
+    const r = h.dias[dia]; if (!r) return false; if (r.todo) return true;
+    const m = Number(p.hour) * 60 + Number(p.minute);
+    const min = (x) => (/^\d{1,2}:\d{2}$/.test(x || '') ? Number(x.split(':')[0]) * 60 + Number(x.split(':')[1]) : null);
+    return (min(r.ate) != null && m < min(r.ate)) || (min(r.desde) != null && m >= min(r.desde));
+  }
+  function desenharHorarioBia() {
+    const h = horarioEdit;
+    document.querySelectorAll('input[name=bia-hmodo]').forEach((r) => { r.checked = r.value === (h.modo || 'sempre'); });
+    $('bia-hcontinuar').checked = h.continuar !== false;
+    const ativo = h.modo === 'horarios';
+    $('bia-hgrade').style.opacity = ativo ? '1' : '.45';
+    $('bia-hgrade').replaceChildren(
+      el('div', { class: 'bia-gl cab g-hbia' }, el('span', {}, 'Dia'), el('span', {}, 'O dia todo'), el('span', {}, 'Madrugada até'), el('span', {}, 'À noite a partir de')),
+      ...DIAS_BIA.map(([k, rot]) => {
+        const r = (h.dias[k] ||= { todo: false, ate: '', desde: '' });
+        const todo = el('input', { type: 'checkbox' }); todo.checked = !!r.todo;
+        const ate = el('input', { type: 'time', value: r.ate || '' }), desde = el('input', { type: 'time', value: r.desde || '' });
+        const ajustar = () => { ate.disabled = desde.disabled = todo.checked || !ativo; todo.disabled = !ativo; };
+        todo.onchange = () => { r.todo = todo.checked; ajustar(); };
+        ate.oninput = () => { r.ate = ate.value; }; desde.oninput = () => { r.desde = desde.value; };
+        ajustar();
+        return el('div', { class: 'bia-gl g-hbia' }, el('b', {}, rot), el('label', { class: 'bia-linha' }, todo), ate, desde);
+      }));
+  }
+  function carregarHorarioBia() {
+    const h = config?.horario_bia;
+    horarioEdit = { modo: h?.dias ? 'horarios' : 'sempre', continuar: h?.continuar !== false, dias: structuredClone(h?.dias || {}) };
+    desenharHorarioBia();
+  }
+  document.querySelectorAll('input[name=bia-hmodo]').forEach((r) => { r.onchange = () => { horarioEdit.modo = r.value; desenharHorarioBia(); }; });
+  $('bia-hcontinuar').onchange = () => { horarioEdit.continuar = $('bia-hcontinuar').checked; };
+  $('bia-hsugerir').onclick = async () => {
+    $('bia-hstatus').textContent = 'Lendo o horário da loja…';
+    try {
+      const loja = (await chamarServidor('tabelas')).horarios.valor;
+      horarioEdit.modo = 'horarios';
+      for (const [k] of DIAS_BIA) horarioEdit.dias[k] = loja[k] ? { todo: false, ate: loja[k][0], desde: loja[k][1] } : { todo: true, ate: '', desde: '' };
+      desenharHorarioBia();
+      $('bia-hstatus').textContent = 'Preenchido com o contrário do horário da loja. Confira e clique em Salvar.';
+    } catch (e) { $('bia-hstatus').textContent = '⚠️ ' + e.message; }
+  };
+  $('bia-hsalvar').onclick = async () => {
+    let valor = null;
+    if (horarioEdit.modo === 'horarios') {
+      const dias = {};
+      for (const [k, rot] of DIAS_BIA) {
+        const r = horarioEdit.dias[k] || {};
+        if (r.todo) { dias[k] = { todo: true }; continue; }
+        if (!r.ate && !r.desde) { dias[k] = null; continue; }
+        if (r.ate && r.desde && r.ate > r.desde) { $('bia-hstatus').textContent = `⚠️ ${rot}: "Da 0h até" tem que ser antes de "A partir de".`; return; }
+        dias[k] = { ...(r.ate ? { ate: r.ate } : {}), ...(r.desde ? { desde: r.desde } : {}) };
+      }
+      if (Object.values(dias).every((d) => !d)) { $('bia-hstatus').textContent = '⚠️ Marque pelo menos um horário, ou escolha 24 horas.'; return; }
+      valor = { continuar: horarioEdit.continuar, dias };
+    }
+    const { error } = await sb.from('bia_config').update({ horario_bia: valor, atualizado_em: new Date().toISOString() }).eq('id', 1);
+    if (error) { $('bia-hstatus').textContent = error.message.includes('horario_bia') ? '⚠️ Rode a atualização do banco (SQL) para liberar o horário.' : '⚠️ ' + error.message; return; }
+    $('bia-hstatus').textContent = 'Salvo ✓ Vale a partir da próxima mensagem.';
+    await carregarConfig();
+  };
+
+  // ------------------------------------------------------------------ reforço (equipe ocupada)
+  $('bia-reforco-ligar').onclick = async () => {
+    const ativo = config?.reforco_ate && new Date(config.reforco_ate) > new Date();
+    const ate = ativo ? null : new Date(Date.now() + 60 * 60000).toISOString();
+    const { error } = await sb.from('bia_config').update({ reforco_ate: ate, atualizado_em: new Date().toISOString() }).eq('id', 1);
+    if (error) return erro(error.message.includes('reforco_ate') ? 'Rode a atualização do banco (SQL) para liberar o "Bia assume agora".' : error);
+    carregarConfig();
+  };
+
+  // ------------------------------------------------------------------ modo gerência
+  // A equipe vê só Avisos, Conversas e Agendamentos; as configurações ficam em "Gerência".
+  function modoGerencia(ligar) {
+    $('tab-bia').classList.toggle('gerencia', ligar);
+    $('bia-gerencia-bt').textContent = ligar ? '✔ Sair da gerência' : '🔧 Gerência';
+    LS.set('kronos-bia-gerencia', ligar ? '1' : '');
+    if (!ligar && !['alertas', 'conversas', 'agenda'].includes(secao)) mostrarSecao('alertas');
+  }
+  $('bia-gerencia-bt').onclick = () => {
+    const ligar = !$('tab-bia').classList.contains('gerencia');
+    modoGerencia(ligar);
+    if (ligar) mostrarSecao('ajustes');
+  };
+  modoGerencia(LS.get('kronos-bia-gerencia', '') === '1');
+
   // ------------------------------------------------------------------ ajustes e custo
   async function carregarAjustes() {
     await carregarConfig();
     $('bia-cfg-followup').checked = !!config?.followup_ativo;
     $('bia-cfg-auto').checked = !!config?.aprovar_automatico;
     $('bia-cfg-pausa').value = config?.pausa_horas ?? 12;
+    $('bia-cfg-assumir').value = config?.assumir_apos_min ?? 0;
+    carregarHorarioBia();
     carregarUso();
   }
   $('bia-salvar-cfg').onclick = async () => {
     const { error } = await sb.from('bia_config').update({
       followup_ativo: $('bia-cfg-followup').checked, aprovar_automatico: $('bia-cfg-auto').checked,
-      pausa_horas: Math.min(72, Math.max(1, Number($('bia-cfg-pausa').value) || 12)), atualizado_em: new Date().toISOString(),
+      pausa_horas: Math.min(72, Math.max(1, Number($('bia-cfg-pausa').value) || 12)),
+      assumir_apos_min: Math.min(240, Math.max(0, Math.round(Number($('bia-cfg-assumir').value) || 0))), atualizado_em: new Date().toISOString(),
     }).eq('id', 1);
     $('bia-status-cfg').textContent = error ? 'Erro: ' + error.message : 'Salvo ✓';
   };
