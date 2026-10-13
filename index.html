@@ -301,6 +301,16 @@
   #tab-bia .bia-chave.on i{background:#22c55e} #tab-bia .bia-chave.on i::after{left:23px}
   #tab-bia ul{margin:6px 0;padding-left:20px}
   #tab-bia .bia-vazio{text-align:center;color:var(--muted);padding:26px 10px}
+  #tab-bia .bia-gl{display:grid;gap:6px;align-items:center;padding:4px 0;border-bottom:1px solid var(--line)}
+  #tab-bia .bia-gl.cab{font-size:12px;font-weight:800;color:var(--muted);border-bottom:2px solid var(--line)}
+  #tab-bia .bia-gl input{width:100%;min-width:0;padding:7px 8px;font-size:14px;border-radius:10px}
+  #tab-bia .g-catalogo{grid-template-columns:minmax(0,2fr) 64px minmax(0,1.3fr) 92px 34px}
+  #tab-bia .g-troca{grid-template-columns:minmax(0,2fr) 64px 92px 34px}
+  #tab-bia .g-assist{grid-template-columns:minmax(0,2fr) 110px 34px}
+  #tab-bia .g-horario{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) minmax(0,1fr) 92px}
+  #tab-bia .bia-gl .x{padding:6px 0;border:none;background:none;color:var(--danger);font-size:16px;cursor:pointer}
+  #tab-bia .bia-grid-corpo{max-height:60vh;overflow-y:auto}
+  #tab-bia select.bia-sel{padding:9px;border-radius:12px;border:1px solid var(--line);background:#fff;max-width:100%}
   .bia-flutuante{position:fixed;right:16px;bottom:16px;z-index:60;display:none;padding:10px 16px;border-radius:999px;border:none;background:#f97316;color:#fff;font-weight:800;box-shadow:0 8px 24px rgba(249,115,22,.4);cursor:pointer;width:auto}
   .bia-flutuante.on{display:block}
 </style>
@@ -634,6 +644,8 @@
       <button data-secao="conversas">💬 Conversas</button>
       <button data-secao="agenda">📅 Agendamentos</button>
       <button data-secao="aprendizados">🧠 Aprendizados</button>
+      <button data-secao="sac">🎧 SAC</button>
+      <button data-secao="tabelas">💲 Tabelas</button>
       <button data-secao="relatorio">📊 Relatório</button>
       <button data-secao="ajustes">⚙️ Ajustes</button>
     </nav>
@@ -664,15 +676,49 @@
       <h3>💡 Sugestões da Bia</h3><div id="bia-sugestoes"></div>
       <h3>✅ Regras que a Bia segue</h3><div id="bia-regras"></div>
     </section>
+    <section data-secao="sac" style="display:none">
+      <div class="bia-card">
+        <b id="bia-sac-titulo">Nova resposta do SAC</b>
+        <p class="bia-sub" style="margin:4px 0 8px">Ensine a Bia a responder dúvidas de quem já comprou ou de atendimento em geral. Escreva como a loja responderia: ela usa a ideia com as palavras dela e de forma curta.</p>
+        <input id="bia-sac-pergunta" type="text" placeholder="Assunto ou pergunta. Ex.: Como acionar a garantia do seminovo?" style="width:100%;margin-bottom:8px">
+        <textarea id="bia-sac-resposta" rows="3" placeholder="Resposta da loja. Ex.: Traga o aparelho na loja com o comprovante da compra. A equipe testa na hora e, se for defeito coberto, resolve dentro da garantia de 6 meses."></textarea>
+        <div class="bia-linha" style="margin-top:8px"><button class="bia-bt pri mini" id="bia-sac-salvar">Adicionar</button><button class="bia-bt mini" id="bia-sac-cancelar" style="display:none">Cancelar</button><span class="bia-sub" id="bia-sac-status"></span></div>
+      </div>
+      <div id="bia-sac-lista"></div>
+    </section>
+    <section data-secao="tabelas" style="display:none">
+      <div class="bia-card">
+        <div class="bia-linha" style="margin-bottom:8px">
+          <select id="bia-tab-escolha" class="bia-sel">
+            <option value="lacrados">📦 Preços dos lacrados</option>
+            <option value="seminovos">📱 Preços dos seminovos</option>
+            <option value="troca">🔄 Quanto pagamos na troca</option>
+            <option value="assistencia">🛠️ Descontos de assistência</option>
+            <option value="horarios">🕘 Horário de funcionamento</option>
+            <option value="taxas">💳 Taxas da maquininha</option>
+          </select>
+          <select id="bia-tab-assist" class="bia-sel" style="display:none"></select>
+          <input id="bia-tab-busca" type="text" placeholder="Buscar modelo" style="flex:1;min-width:120px">
+        </div>
+        <div class="bia-sub" id="bia-tab-info"></div>
+        <div id="bia-tab-grade" style="margin-top:8px"></div>
+        <div class="bia-linha" id="bia-tab-botoes" style="margin-top:10px">
+          <button class="bia-bt mini" id="bia-tab-add">+ Adicionar linha</button>
+          <button class="bia-bt pri mini" id="bia-tab-salvar">Salvar</button>
+          <button class="bia-bt nao mini" id="bia-tab-padrao">Voltar à tabela de fábrica</button>
+          <span class="bia-sub" id="bia-tab-status"></span>
+        </div>
+      </div>
+    </section>
     <section data-secao="relatorio" style="display:none">
       <div class="bia-linha" style="margin-bottom:12px"><button class="bia-bt pri" id="bia-analisar">Analisar agora</button><span class="bia-sub" id="bia-status-analise"></span></div>
       <div id="bia-relatorio"></div>
     </section>
     <section data-secao="ajustes" style="display:none">
       <div class="bia-card" style="display:grid;gap:12px">
-        <label class="bia-linha"><input type="checkbox" id="bia-cfg-followup"> Retomar cliente quente ou morno que parou de responder (1 mensagem, dentro das 24h, das 9h às 21h)</label>
+        <label class="bia-linha"><input type="checkbox" id="bia-cfg-followup"> Retomar cliente quente ou morno que parou de responder: até 2 mensagens dentro das 24h que o Instagram permite (das 9h às 21h). Depois disso, a equipe recebe um alerta para retomar pessoalmente.</label>
         <label class="bia-linha"><input type="checkbox" id="bia-cfg-auto"> Aprovar sozinhas as sugestões de baixo risco (nunca as que falam de preço, desconto, brinde ou garantia)</label>
-        <label class="bia-linha">Horas que a Bia fica parada depois que a equipe responde <input type="number" id="bia-cfg-pausa" min="1" max="72" style="width:90px"></label>
+        <label class="bia-linha">Quando alguém da equipe responde um cliente pelo Instagram, a Bia fica quieta naquela conversa por <input type="number" id="bia-cfg-pausa" min="1" max="72" style="width:80px"> horas (ou até clicar em "Devolver para a Bia"). Nas outras conversas ela continua normal.</label>
         <div><button class="bia-bt pri mini" id="bia-salvar-cfg">Salvar</button> <span class="bia-sub" id="bia-status-cfg"></span></div>
       </div>
       <div class="bia-card">
@@ -1967,7 +2013,8 @@
     secao = s;
     document.querySelectorAll('#bia-abas button').forEach((b) => b.classList.toggle('ativa', b.dataset.secao === s));
     document.querySelectorAll('#bia-app > section').forEach((x) => { x.style.display = x.dataset.secao === s ? '' : 'none'; });
-    ({ alertas: renderAlertas, conversas: carregarConversas, agenda: carregarAgenda, aprendizados: carregarAprendizados, relatorio: carregarRelatorio, ajustes: carregarAjustes })[s]?.();
+    ({ alertas: renderAlertas, conversas: carregarConversas, agenda: carregarAgenda, aprendizados: carregarAprendizados, sac: carregarSac,
+      tabelas: carregarTabelas, relatorio: carregarRelatorio, ajustes: carregarAjustes })[s]?.();
   }
   document.querySelectorAll('#bia-abas button').forEach((b) => { b.onclick = () => mostrarSecao(b.dataset.secao); });
 
@@ -2196,19 +2243,223 @@
         el('b', {}, '✅ O que está funcionando'), el('ul', {}, (a.funciona || []).map((t) => el('li', {}, t))),
         el('b', {}, '❌ O que não está funcionando'), el('ul', {}, (a.nao_funciona || []).map((t) => el('li', {}, t)))));
   }
+  // Chama o servidor da Bia com o login da equipe.
+  async function chamarServidor(acao, extra = {}) {
+    const { data } = await sb.auth.getSession();
+    const r = await fetch(`${SUPABASE_URL}/functions/v1/rotinas`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${data.session?.access_token}`, apikey: SUPABASE_KEY },
+      body: JSON.stringify({ acao, ...extra }),
+    });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(j.erro || `erro ${r.status}`);
+    return j;
+  }
   $('bia-analisar').onclick = async () => {
     $('bia-status-analise').textContent = 'Analisando… (pode levar até 1 minuto)';
     try {
-      const { data } = await sb.auth.getSession();
-      const r = await fetch(`${SUPABASE_URL}/functions/v1/rotinas`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${data.session.access_token}`, apikey: SUPABASE_KEY },
-        body: JSON.stringify({ acao: 'analisar_agora' }),
-      });
-      const j = await r.json().catch(() => ({}));
-      if (!r.ok) throw new Error(j.erro || r.status);
+      await chamarServidor('analisar_agora');
       $('bia-status-analise').textContent = 'Pronto. Veja também as sugestões em 🧠 Aprendizados.';
       carregarRelatorio();
     } catch (e) { $('bia-status-analise').textContent = 'Erro: ' + e.message; }
+  };
+
+  // ------------------------------------------------------------------ SAC
+  let sacEditando = null;
+  function limparSac() {
+    sacEditando = null;
+    $('bia-sac-pergunta').value = ''; $('bia-sac-resposta').value = '';
+    $('bia-sac-titulo').textContent = 'Nova resposta do SAC';
+    $('bia-sac-salvar').textContent = 'Adicionar'; $('bia-sac-cancelar').style.display = 'none';
+  }
+  async function carregarSac() {
+    const { data, error } = await sb.from('bia_sac').select('*').order('criado_em', { ascending: false });
+    if (error) return erro(error.message.includes('does not exist') ? 'Rode a atualização do banco da Bia (SQL) para liberar o SAC.' : error);
+    const atualizar = async (id, campos) => {
+      const { error: e } = await sb.from('bia_sac').update({ ...campos, atualizado_em: new Date().toISOString() }).eq('id', id);
+      if (e) return erro(e); carregarSac();
+    };
+    $('bia-sac-lista').replaceChildren(...(data.length ? data.map((q) => el('div', { class: 'bia-card', style: q.ativo ? '' : 'opacity:.55' },
+      el('b', {}, q.pergunta), el('div', { style: 'white-space:pre-wrap;margin:6px 0' }, q.resposta),
+      el('div', { class: 'bia-linha' },
+        el('button', { class: 'bia-bt mini', onclick: () => {
+          sacEditando = q.id; $('bia-sac-pergunta').value = q.pergunta; $('bia-sac-resposta').value = q.resposta;
+          $('bia-sac-titulo').textContent = 'Editando resposta do SAC'; $('bia-sac-salvar').textContent = 'Salvar alteração';
+          $('bia-sac-cancelar').style.display = ''; $('bia-sac-pergunta').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } }, '✏️ Editar'),
+        el('button', { class: 'bia-bt mini', onclick: () => atualizar(q.id, { ativo: !q.ativo }) }, q.ativo ? '⏸ Pausar' : '▶️ Ativar'),
+        el('button', { class: 'bia-bt nao mini', onclick: async () => { if (confirm('Apagar esta resposta do SAC?')) { await sb.from('bia_sac').delete().eq('id', q.id); carregarSac(); } } }, '🗑')))) :
+      [vazio('Nenhuma resposta cadastrada. Comece pelas dúvidas que os clientes mais mandam no pós-venda.')]));
+  }
+  $('bia-sac-cancelar').onclick = limparSac;
+  $('bia-sac-salvar').onclick = async () => {
+    const pergunta = $('bia-sac-pergunta').value.trim(), resposta = $('bia-sac-resposta').value.trim();
+    if (!pergunta || !resposta) { $('bia-sac-status').textContent = 'Preencha a pergunta e a resposta.'; return; }
+    const { error } = sacEditando
+      ? await sb.from('bia_sac').update({ pergunta, resposta, atualizado_em: new Date().toISOString() }).eq('id', sacEditando)
+      : await sb.from('bia_sac').insert({ id: crypto.randomUUID(), pergunta, resposta, ativo: true });
+    if (error) return erro(error);
+    $('bia-sac-status').textContent = 'Salvo ✓ A Bia já usa na próxima mensagem.';
+    limparSac(); carregarSac();
+  };
+
+  // ------------------------------------------------------------------ tabelas (preços, troca, assistência, horários)
+  const DIAS_TAB = [['segunda', 'Segunda'], ['terca', 'Terça'], ['quarta', 'Quarta'], ['quinta', 'Quinta'], ['sexta', 'Sexta'],
+    ['sabado', 'Sábado'], ['domingo', 'Domingo'], ['feriado', 'Feriados']];
+  const curto = (m) => String(m || '').replace(/^iPhone\s*/i, '');
+  const numero = (v) => {
+    const t = String(v ?? '').trim().replace(/^R\$\s*/i, '');
+    if (!t) return NaN;
+    return Number(/,\d{1,2}$/.test(t) ? t.replace(/\./g, '').replace(',', '.') : t.replace(/[.,](?=\d{3}\b)/g, ''));
+  };
+  let tabelas = null, linhasTab = [];
+  const escolha = () => $('bia-tab-escolha').value;
+
+  async function carregarTabelas() {
+    $('bia-tab-status').textContent = '';
+    $('bia-tab-grade').replaceChildren(el('div', { class: 'bia-sub' }, 'Carregando…'));
+    try { tabelas = await chamarServidor('tabelas'); } catch (e) { $('bia-tab-grade').replaceChildren(vazio('Não consegui carregar as tabelas: ' + e.message)); return; }
+    const tipos = Object.entries(tabelas.assistencia.valor.reparos);
+    const atual = $('bia-tab-assist').value;
+    $('bia-tab-assist').replaceChildren(...tipos.map(([k, r]) => el('option', { value: k }, r.descricao)));
+    if (atual) $('bia-tab-assist').value = atual;
+    montarLinhas();
+  }
+
+  function montarLinhas() {
+    const e = escolha();
+    $('bia-tab-assist').style.display = e === 'assistencia' ? '' : 'none';
+    const listaTab = ['lacrados', 'seminovos', 'troca', 'assistencia'].includes(e);
+    $('bia-tab-busca').style.display = listaTab ? '' : 'none';
+    $('bia-tab-add').style.display = listaTab ? '' : 'none';
+    $('bia-tab-botoes').style.display = e === 'taxas' ? 'none' : '';
+    if (e === 'taxas') {
+      $('bia-tab-info').textContent = '';
+      $('bia-tab-grade').replaceChildren(el('div', { class: 'bia-card', style: 'margin:0' },
+        el('b', {}, 'A Bia usa as mesmas taxas do simulador.'),
+        el('p', { class: 'bia-sub' }, 'Para mudar, vá na aba 📱 Simulador e clique no ⚙ do rodapé. A Bia passa a usar as taxas novas em até 5 minutos.')));
+      return;
+    }
+    const chave = { lacrados: 'catalogo', seminovos: 'catalogo', troca: 'upgrade', assistencia: 'assistencia', horarios: 'horarios' }[e];
+    const t = tabelas[chave];
+    const dica = { lacrados: ' Cor: só preencha quando o preço muda por cor (uma linha para cada cor).', seminovos: ' Cor: só preencha quando o preço muda por cor (uma linha para cada cor).',
+      troca: ' Valor pago com o aparelho perfeito; os defeitos descontam pela tabela de assistência. Modelo fora da lista = não aceito na troca.',
+      assistencia: ' Escolha o tipo de reparo acima. Modelo sem valor = a Bia chama a equipe.' }[e] || '';
+    $('bia-tab-info').textContent = (t.editada ? `Editada em ${quando(t.atualizado_em)}${t.atualizado_por ? ' (' + t.atualizado_por + ')' : ''}.` : 'Tabela de fábrica (ainda não editada aqui).') + dica;
+    $('bia-tab-padrao').style.display = t.editada ? '' : 'none';
+    if (e === 'lacrados' || e === 'seminovos') {
+      linhasTab = t.valor[e].flatMap((i) => (i.cores ? Object.entries(i.cores).map(([cor, preco]) => ({ modelo: curto(i.modelo), gb: i.gb, cor, preco }))
+        : [{ modelo: curto(i.modelo), gb: i.gb, cor: '', preco: i.preco }]));
+    } else if (e === 'troca') {
+      linhasTab = Object.entries(t.valor.valores).flatMap(([m, porGb]) => Object.entries(porGb).map(([gb, valor]) => ({ modelo: curto(m), gb, valor })));
+    } else if (e === 'assistencia') {
+      const tipo = $('bia-tab-assist').value || Object.keys(t.valor.reparos)[0];
+      linhasTab = Object.entries(t.valor.reparos[tipo].valores).map(([m, valor]) => ({ modelo: curto(m), valor }));
+    } else {
+      linhasTab = DIAS_TAB.map(([k, rot]) => ({ dia: k, rot, abre: t.valor[k]?.[0] || '09:00', fecha: t.valor[k]?.[1] || '18:00', fechado: !t.valor[k] }));
+    }
+    desenharGrade();
+  }
+
+  function desenharGrade() {
+    const e = escolha();
+    const campo = (l, k, attrs = {}) => {
+      const i = el('input', { type: 'text', value: l[k] ?? '', ...attrs });
+      i.oninput = () => { l[k] = i.value; };
+      return i;
+    };
+    const apagar = (l) => el('button', { class: 'x', title: 'Remover linha', onclick: () => { linhasTab.splice(linhasTab.indexOf(l), 1); desenharGrade(); } }, '✕');
+    let cab, linha, classe;
+    if (e === 'lacrados' || e === 'seminovos') {
+      classe = 'g-catalogo'; cab = ['Modelo', 'GB', 'Cor', 'Preço à vista', ''];
+      linha = (l) => [campo(l, 'modelo', { placeholder: '17 Pro Max' }), campo(l, 'gb', { inputmode: 'numeric', placeholder: '256' }),
+        campo(l, 'cor', { placeholder: 'todas' }), campo(l, 'preco', { inputmode: 'decimal', placeholder: '0' }), apagar(l)];
+    } else if (e === 'troca') {
+      classe = 'g-troca'; cab = ['Modelo do cliente', 'GB', 'Pagamos (perfeito)', ''];
+      linha = (l) => [campo(l, 'modelo', { placeholder: '13 Pro Max' }), campo(l, 'gb', { inputmode: 'numeric' }), campo(l, 'valor', { inputmode: 'decimal' }), apagar(l)];
+    } else if (e === 'assistencia') {
+      classe = 'g-assist'; cab = ['Modelo', 'Desconto (custo do reparo)', ''];
+      linha = (l) => [campo(l, 'modelo', { placeholder: '13 Pro Max' }), campo(l, 'valor', { inputmode: 'decimal' }), apagar(l)];
+    } else {
+      classe = 'g-horario'; cab = ['Dia', 'Abre', 'Fecha', 'Fechado'];
+      linha = (l) => {
+        const abre = campo(l, 'abre', { type: 'time' }), fecha = campo(l, 'fecha', { type: 'time' });
+        const fechado = el('input', { type: 'checkbox' }); fechado.checked = l.fechado;
+        const ajustar = () => { abre.disabled = fecha.disabled = fechado.checked; };
+        fechado.onchange = () => { l.fechado = fechado.checked; ajustar(); }; ajustar();
+        return [el('b', {}, l.rot), abre, fecha, el('label', { class: 'bia-linha' }, fechado, 'fechado')];
+      };
+    }
+    const busca = $('bia-tab-busca').value.trim().toLowerCase();
+    $('bia-tab-grade').replaceChildren(
+      el('div', { class: 'bia-gl cab ' + classe }, cab.map((c) => el('span', {}, c))),
+      el('div', { class: 'bia-grid-corpo' }, linhasTab.map((l) => {
+        const d = el('div', { class: 'bia-gl ' + classe }, linha(l));
+        if (busca && l.modelo != null && !String(l.modelo).toLowerCase().includes(busca) && String(l.modelo).trim()) d.style.display = 'none';
+        return d;
+      })));
+  }
+
+  // Monta a tabela no formato da Bia; o servidor confere tudo de novo antes de gravar.
+  function tabelaDasLinhas() {
+    const e = escolha();
+    const preenchidas = linhasTab.filter((l) => Object.entries(l).some(([k, v]) => !['rot', 'dia', 'fechado'].includes(k) && String(v ?? '').trim()));
+    if (e === 'lacrados' || e === 'seminovos') {
+      const grupos = new Map();
+      for (const l of preenchidas) {
+        const k = `${String(l.modelo).trim().toLowerCase()}|${Number(l.gb)}`;
+        if (!grupos.has(k)) grupos.set(k, { modelo: String(l.modelo).trim(), gb: Number(l.gb), linhas: [] });
+        grupos.get(k).linhas.push(l);
+      }
+      const itens = [...grupos.values()].map((g) => {
+        const comCor = g.linhas.filter((l) => String(l.cor || '').trim());
+        if (!comCor.length) {
+          if (g.linhas.length > 1) throw new Error(`${g.modelo} ${g.gb}GB aparece duas vezes. Se o preço muda por cor, preencha a cor em cada linha.`);
+          return { modelo: g.modelo, gb: g.gb, preco: numero(g.linhas[0].preco) };
+        }
+        if (comCor.length !== g.linhas.length) throw new Error(`${g.modelo} ${g.gb}GB: preencha a cor em todas as linhas desse modelo.`);
+        return { modelo: g.modelo, gb: g.gb, cores: Object.fromEntries(comCor.map((l) => [String(l.cor).trim(), numero(l.preco)])) };
+      });
+      return { chave: 'catalogo', valor: { ...tabelas.catalogo.valor, [e]: itens } };
+    }
+    if (e === 'troca') {
+      const valores = {};
+      for (const l of preenchidas) (valores[String(l.modelo).trim()] ||= {})[String(Number(l.gb))] = numero(l.valor);
+      return { chave: 'upgrade', valor: { valores } };
+    }
+    if (e === 'assistencia') {
+      const valor = structuredClone(tabelas.assistencia.valor);
+      const tipo = $('bia-tab-assist').value;
+      valor.reparos[tipo].valores = Object.fromEntries(preenchidas.map((l) => [String(l.modelo).trim(), numero(l.valor)]));
+      return { chave: 'assistencia', valor };
+    }
+    return { chave: 'horarios', valor: Object.fromEntries(linhasTab.map((l) => [l.dia, l.fechado ? null : [l.abre, l.fecha]])) };
+  }
+
+  $('bia-tab-escolha').onchange = () => { $('bia-tab-busca').value = ''; $('bia-tab-status').textContent = ''; montarLinhas(); };
+  $('bia-tab-assist').onchange = () => { $('bia-tab-status').textContent = ''; montarLinhas(); };
+  $('bia-tab-busca').oninput = desenharGrade;
+  $('bia-tab-add').onclick = () => {
+    const e = escolha();
+    linhasTab.unshift(e === 'lacrados' || e === 'seminovos' ? { modelo: '', gb: '', cor: '', preco: '' } : e === 'troca' ? { modelo: '', gb: '', valor: '' } : { modelo: '', valor: '' });
+    $('bia-tab-busca').value = ''; desenharGrade();
+    $('bia-tab-grade').querySelector('.bia-grid-corpo input')?.focus();
+  };
+  $('bia-tab-salvar').onclick = async () => {
+    $('bia-tab-status').textContent = 'Conferindo e salvando…';
+    try {
+      const { chave, valor } = tabelaDasLinhas();
+      await chamarServidor('salvar_tabela', { chave, valor });
+      await carregarTabelas();
+      $('bia-tab-status').textContent = 'Salvo ✓ A Bia passa a usar em até 1 minuto.';
+    } catch (e) { $('bia-tab-status').textContent = '⚠️ ' + e.message; }
+  };
+  $('bia-tab-padrao').onclick = async () => {
+    const e = escolha();
+    const chave = { lacrados: 'catalogo', seminovos: 'catalogo', troca: 'upgrade', assistencia: 'assistencia', horarios: 'horarios' }[e];
+    const aviso = chave === 'catalogo' ? 'Voltar os preços de lacrados E seminovos para a tabela de fábrica?' : 'Voltar esta tabela para a de fábrica?';
+    if (!confirm(aviso)) return;
+    try { await chamarServidor('restaurar_tabela', { chave }); await carregarTabelas(); $('bia-tab-status').textContent = 'Tabela de fábrica restaurada ✓'; }
+    catch (err) { $('bia-tab-status').textContent = '⚠️ ' + err.message; }
   };
 
   // ------------------------------------------------------------------ ajustes e custo
